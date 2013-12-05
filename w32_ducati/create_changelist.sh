@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IGNORE_LIST="out pub filelist restore_codebase.sh change_list.txt change_list.txt.temp create_changelist.sh"
+IGNORE_LIST="out pub filelist restore_codebase.sh change_list.txt change_list.txt.temp create_changelist.sh quickMakeImage"
 
 YOURIBUILD2PATH=`pwd`
 
