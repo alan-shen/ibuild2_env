@@ -13,24 +13,25 @@ if [ $? == 0 ];then
 	pushd $BASE_DIR > /dev/null
 
 	# apply a patch for ignore .svn in findleaves.py/find/grep
-	alias find=find_ex
-	alias grep=grep_ex
+	echo -e "\n\n\n>>>>>>>>>> APPLY PATH IGNORE .SVN DIRECTORY <<<<<<<<<<"
+	if [ -e $HOME/bin/find_ex ];then alias find=find_ex;echo "use find_ex as find";fi
+	if [ -e $HOME/bin/grep_ex ];then alias grep=grep_ex;echo "use grep_ex as grep";fi
+	svn revert $BASE_DIR/build/tools/findleaves.py
 	patch -p0 < ${BINPATH}/findleaves_prune_svn.patch
 
 	# create change list first(for that you can clean your base line quickly use script "restore_codebase.sh")
 	echo -e "\n\n\n>>>>>>>>>> CREATE CHANGELIST FOR RESTORE(CLEAN) MAY NEED 6'MINUTE  <<<<<<<<<<"
-	create_changelist.sh
+	${BASE_DIR}/create_changelist.sh
 
 	# build
 	echo -e "\n\n\n>>>>>>>>>> ANDROID FULL BUILD PROCESS  <<<<<<<<<<"
 	source build/envsetup.sh
 	lunch 19
-	START=`date`;make flashfiles -j2;echo $START;date
+	#START=`date`;make flashfiles -j2;echo $START;date
 	START=`date`;make bootimage -j2;echo $START;date
-	REV_BASE=`svn info $BASE_DIR | grep Revision | awk -F' ' '{print $2}'` && echo $REV_BASE > $BASE_DIR/.svnversion
-	REV_IBUILD=`svn info $PROD_DIR | grep Revision | awk -F' ' '{print $2}'` && echo $REV_IBUILD > $PROD_DIR/.svnversion
+	REV_BASE=`svn info $BASE_DIR | grep Revision | awk -F' ' '{print $2}'`
+	REV_IBUILD=`svn info $PROD_DIR | grep Revision | awk -F' ' '{print $2}'`
 	echo -e "\n\n=========================================="
-	date
 	echo -e "  Base Version: $REV_BASE || $BASE_DIR"
 	echo -e "IBUILD Version: $REV_IBUILD || $PROD_DIR"
 	echo -e "==========================================\n\n"
