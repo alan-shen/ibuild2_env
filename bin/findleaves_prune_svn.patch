@@ -1,0 +1,13 @@
+Index: build/tools/findleaves.py
+===================================================================
+--- build/tools/findleaves.py	(revision 94)
++++ build/tools/findleaves.py	(working copy)
+@@ -68,7 +68,7 @@
+ 
+ def main(argv):
+   mindepth = -1
+-  prune = []
++  prune = [ '.svn' ]
+   i=1
+   while i<len(argv) and len(argv[i])>2 and argv[i][0:2] == "--":
+     arg = argv[i]
