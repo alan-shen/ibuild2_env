@@ -1,4 +1,5 @@
 bin/hb
+devr4tw32/.svnversion
 devr4tw32/.svn/
 devr4tw32/bootable/
 devr4tw32/build/
@@ -15,6 +16,9 @@ devr4tw32/release/
 devr4tw32/system/
 devr4tw32/vendor/
 w32_ducati_v94/.svn/
+w32_ducati_v94/.svnversion
+w32_ducati_v94/filelist
+w32_ducati_v94/pub/
 w32_ducati_v94/Makefile
 w32_ducati_v94/abi/
 w32_ducati_v94/bionic/
@@ -45,4 +49,5 @@ w32_ducati_v94/spec_w32_DUCATI.conf
 w32_ducati_v94/system/
 w32_ducati_v94/tools/
 w32_ducati_v94/vendor/
+w32_pure/
 
