@@ -1,0 +1,16 @@
+
+kernel/arch/x86/platform/intel-mid/device_libs/platform_focaltech.c
+
+void *focaltech_platform_data(void *info)
+{
+	static struct ft5x0x_platform_data focaltech_pdata;
+
+	focaltech_pdata.numtouch       = 10;
+	focaltech_pdata.x_max          = 768;
+	focaltech_pdata.y_max          = 1024;
+
+/home/b645/ibuild2_env/attach/vendor/intel/clovertrail/board/victoriabay/victoriabay.mk
+
+#Enable external SDcard storage for VB
+#PRODUCT_CHARACTERISTICS := nosdcard
+#For Audio Offload support
