@@ -10,7 +10,7 @@ BE="\033[34;49;0m"
 AP="\033[36;49;1m"
 AE="\033[36;49;0m"
 
-IGNORE_LIST="out pub filelist restore_codebase.sh change_list.txt change_list.txt.temp create_changelist.sh quickMakeImage kernel/cscope.out kernel/tags tags cscope.out LOCAL_MODULE removesvn.sh revert_changelist.sh"
+IGNORE_LIST="out pub filelist restore_codebase.sh change_list.txt change_list.txt.temp create_changelist.sh quickMakeImage kernel/cscope.out kernel/tags tags cscope.out LOCAL_MODULE removesvn.sh revert_changelist.sh kernel/buildkernel.sh"
 
 YOURIBUILD2PATH=`pwd`
 

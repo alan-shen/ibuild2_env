@@ -1,0 +1,156 @@
+Index: vendor/intel/support/kernel-build.sh
+===================================================================
+--- vendor/intel/support/kernel-build.sh	(revision 98)
++++ vendor/intel/support/kernel-build.sh	(working copy)
+@@ -1,5 +1,22 @@
+ #!/bin/bash
+ 
++def_colors () {
++        # 特性
++        normal='\033[0m';       bold='\033[1m';         dim='\033[2m';          under='\033[4m';
++        italic='\033[3m';       noitalic='\033[23m';    blink='\033[5m';
++        reverse='\033[7m';      conceal='\033[8m';      nobold='\033[22m';
++        nounder='\033[24m';     noblink='\033[25m';
++        # 前景
++        black='\033[30m';       red='\033[31m';         green='\033[32m';       yellow='\033[33m';
++        blue='\033[34m';        magenta='\033[35m';     cyan='\033[36m';        white='\033[37m';
++        # 背景
++        bblack='\033[40m';      bred='\033[41m';
++        bgreen='\033[42m';      byellow='\033[43m';
++        bblue='\033[44m';       bmagenta='\033[245m';
++        bcyan='\033[46m';       bwhite='\033[47m';
++}
++def_colors
++
+ #
+ # File descriptor 6 will output the the original stderr of the
+ # invoked shell. We do this so that a function can directly exit on failure...
+@@ -50,6 +67,18 @@
+ 
+ init_variables() {
+ 
++    echo -e "${red}  TARGET_TOOLS_PREFIX=${green}${TARGET_TOOLS_PREFIX}${normal}"
++    echo -e "${red}        TARGET_DEVICE=${green}${TARGET_DEVICE}${normal}"
++    echo -e "${red}TARGET_BOARD_PLATFORM=${green}${TARGET_BOARD_PLATFORM}${normal}"
++    echo -e "${red}       KERNEL_SRC_DIR=${green}${KERNEL_SRC_DIR}${normal}"
++    echo -e "${red}          DIFFCONFIGS=${green}${DIFFCONFIGS}${normal}"
++    echo -e "${red}KERNEL_DIFFCONFIG_DIR=${green}${KERNEL_DIFFCONFIG_DIR}${normal}"
++    echo -e "${red}          PRODUCT_OUT=${green}${PRODUCT_OUT}${normal}"
++    echo -e "${red}   KERNEL_BUILD_FLAGS=${green}${KERNEL_BUILD_FLAGS}${normal}"
++    echo -e "${red}   kernel_build_64bit=${green}${kernel_build_64bit}${normal}"
++    echo -e "${red}        CROSS_COMPILE=${green}${CROSS_COMPILE}${normal}"
++    echo -e "${blue}${bold}.......... After init_variables() .......${normal}"
++
+     if [ -z "${TARGET_TOOLS_PREFIX}" ]; then
+         echo >&6 "Warning: TARGET_TOOLS_PREFIX was not set."
+         TARGET_TOOLS_PREFIX="$TOP/prebuilts/gcc/${_host_os}/x86/i686-linux-android-4.6/bin/i686-linux-android-"
+@@ -80,9 +109,9 @@
+ 	KERNEL_BUILD_FLAGS="ANDROID_TOOLCHAIN_FLAGS="
+     fi
+ 
+-    echo >&6 "ARCH: $ARCH"
+-    echo >&6 "CROSS_COMPILE: $CROSS_COMPILE"
+-    echo >&6 "PATH: $PATH"
++    #echo >&6 "ARCH: $ARCH"
++    #echo >&6 "CROSS_COMPILE: $CROSS_COMPILE"
++    #echo >&6 "PATH: $PATH"
+ 
+     if [ -z "${TARGET_BOARD_PLATFORM}" ]; then
+         echo "No custom board specified"
+@@ -116,6 +145,15 @@
+     KERNEL_FILE=${PRODUCT_OUT}/kernel
+     KERNEL_BUILD_DIR=${PRODUCT_OUT}/kernel_build
+ 
++    echo -e "${red}TARGET_TOOLS_PREFIX=${green}${TARGET_TOOLS_PREFIX}${normal}"
++    echo -e "${red}CCACHE_TOOLS_PREFIX=${green}${CCACHE_TOOLS_PREFIX}${normal}"
++    echo -e "${red}      CROSS_COMPILE=${green}${CROSS_COMPILE}${normal}"
++    echo -e "${red}               ARCH=${green}${ARCH}${normal}"
++    echo -e "${red}             VENDOR=${green}${VENDOR}${normal}"
++    echo -e "${red}          _soc_type=${green}${_soc_type}${normal}"
++    echo -e "${red}        PRODUCT_OUT=${green}${PRODUCT_OUT}${normal}"
++    echo -e "${red}        KERNEL_FILE=${green}${KERNEL_FILE}${normal}"
++    echo -e "${red}   KERNEL_BUILD_DIR=${green}${KERNEL_BUILD_DIR}${normal}"
+ }
+ 
+ make_kernel() {
+@@ -130,17 +168,17 @@
+     cd $KERNEL_SRC_DIR
+ 
+     if [ -z "$_preserve_kernel_config" ]; then
+-        rm -f ${KERNEL_BUILD_DIR}/.config
++        rm -fv ${KERNEL_BUILD_DIR}/.config
+     fi
+     if [ "$_clean" ]; then
+         make "${KMAKEFLAGS[@]}" mrproper
+     fi
+ set -x
+     if [ ! -e ${KERNEL_BUILD_DIR}/.config ]; then
+-        echo "making kernel ${KERNEL_BUILD_DIR}/.config file"
++        echo -e "${yellow}making kernel ${KERNEL_BUILD_DIR}/.config file [FLAG: ${red}${KMAKEFLAGS[@]}${yellow}] ${normal}"
+         cp arch/x86/configs/${ARCH}_${_soc_type}_defconfig ${KERNEL_BUILD_DIR}/.config
+         diffconfigs="${TARGET_DEVICE} ${DIFFCONFIGS}"
+-        echo ${diffconfigs}
++        echo -e "${red}${bold}diffconfigs = ${yellow}${bold}${diffconfigs}${normal}"
+         for diffconfig in ${diffconfigs}
+         do
+             if [ -f ${TOP}/${KERNEL_DIFFCONFIG_DIR}/${diffconfig}_diffconfig ]
+@@ -347,6 +385,12 @@
+ }
+ 
+ main() {
++
++    echo -e "${blue}${bold}===================================================================================================${normal}"
++    echo -e "${yellow}<<<<<< kernel-build.sh >>>>>>${normal}"
++    echo -e "${yellow}$0 $1 $2 $3 $4 $5 $6${normal}"
++    echo -e "${yellow}`dirname ${0}` - `pwd`${normal}"
++
+     while getopts vBM:j:kthCo:X:f: opt
+     do
+         case "${opt}" in
+@@ -398,6 +442,7 @@
+             if [ "x${OPTARG}" == "xmenuconfig" ]
+             then
+                     _menuconfig=true
++                    echo -e ">>> menuconfig=${red}${_menuconfig}${normal}"
+             fi
+             ;;
+         f)
+@@ -415,23 +460,31 @@
+ 
+     if [ "$EXTERNAL_MODULE_DIRECTORY" ]; then
+         echo >&6
+-        echo >&6 "Building external module for $TARGET_DEVICE"
+-        echo >&6 "------------------------------------------------"
++        #echo >&6 "Building external module for $TARGET_DEVICE"
++        #echo >&6 "------------------------------------------------"
++        echo -e "${byellow}Building external module for $TARGET_DEVICE ${normal}"
++        echo -e "${byellow}------------------------------------------------ ${normal}"
+         make_module_external ${TARGET_DEVICE}
+     elif [ "$EXTERNAL_MODULE_IN_DIRECTORY" ]; then
+         echo >&6
+-        echo >&6 "Building external module for $TARGET_DEVICE"
+-        echo >&6 "  from $EXTERNAL_MODULE_IN_DIRECTORY"
+-        echo >&6 "------------------------------------------------"
++        #echo >&6 "Building external module for $TARGET_DEVICE"
++        #echo >&6 "  from $EXTERNAL_MODULE_IN_DIRECTORY"
++        #echo >&6 "------------------------------------------------"
++        echo -e "${byellow}Building external module for $TARGET_DEVICE ${normal}"
++        echo -e "${byellow}  from $EXTERNAL_MODULE_IN_DIRECTORY ${normal}"
++        echo -e "${byellow}------------------------------------------------${normal}"
+         make_module_external_in_directory ${TARGET_DEVICE}
+     else
+         echo >&6
+-        echo >&6 "Building kernel for $TARGET_DEVICE"
+-        echo >&6 "---------------------------------"
++        #echo >&6 "Building kernel for $TARGET_DEVICE"
++        #echo >&6 "---------------------------------"
++        echo -e "${byellow}Building kernel for $TARGET_DEVICE ${normal}"
++        echo -e "${byellow}--------------------------------- ${normal}"
+         make_kernel ${TARGET_DEVICE}
+         exit_on_error $?
+     fi
+     run_depmod
++    echo -e "${blue}${bold}===================================================================================================${normal}"
+     exit 0
+ }
+ 
