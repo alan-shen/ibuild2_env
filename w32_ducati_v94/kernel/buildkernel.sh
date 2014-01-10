@@ -4,5 +4,9 @@
 
 echo -e "##### Build Kernel(bzImage) #####"
 make ARCH=i386 O=/home/b645/ibuild2_env/w32_ducati_v94/out/target/product/redhookbay/kernel_build ANDROID_TOOLCHAIN_FLAGS=-mno-android -j8 bzImage
-echo -e "\n\n##### Build Modules         #####"
-make ARCH=i386 O=/home/b645/ibuild2_env/w32_ducati_v94/out/target/product/redhookbay/kernel_build ANDROID_TOOLCHAIN_FLAGS=-mno-android -j8 modules
+#echo -e "\n\n##### Build Modules         #####"
+#make ARCH=i386 O=/home/b645/ibuild2_env/w32_ducati_v94/out/target/product/redhookbay/kernel_build ANDROID_TOOLCHAIN_FLAGS=-mno-android -j8 modules
+
+
+
+#make ARCH=i386 O=/home/b645/ibuild2_env/w32_ducati_v94/out/target/product/redhookbay/kernel_build ANDROID_TOOLCHAIN_FLAGS=-mno-android menuconfig

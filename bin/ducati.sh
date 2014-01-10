@@ -23,7 +23,7 @@ if [ $? == 0 ];then
 	if [ -e $HOME/bin/grep_ex ];then alias grep=grep_ex;echo "use grep_ex as grep";fi
 	svn revert $BASE_DIR/build/tools/findleaves.py
 	patch -p0 < ${BINPATH}/findleaves_prune_svn.patch
-	patch -p0 < ${BINPATH}/patch_show_kernel_build_info.patch
+	#patch -p0 < ${BINPATH}/patch_show_kernel_build_info.patch
 	cp -rfv $BINPATH/platform_focaltech.c $BASE_DIR/kernel/arch/x86/platform/intel-mid/device_libs/platform_focaltech.c
 
 	# create change list first(for that you can clean your base line quickly use script "restore_codebase.sh")
